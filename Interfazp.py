@@ -1,6 +1,9 @@
 
 import tkinter as tk
 from PIL import ImageTk ,Image
+from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
+import matplotlib.pyplot as plt
+import numpy as np
 
 '''Configuramos la Ventana'''
 window = tk.Tk()  # Definimos la ventana con nombre window
@@ -18,9 +21,16 @@ frame1.place(x=0, y=0)
 frame1.config(bg="#2F3E46", width=1080, height=720, bd=8)
 
 
-
-
-
+def grafica():
+    plt.style.use('seaborn-darkgrid')
+    fig = plt.Figure(figsize=(4.55, 3), dpi=100)
+    t = np.arange(0,10, 0.01)
+    fig.add_subplot(111).plot(t, np.cos(t))     # subplot(filas, columnas, item)
+    fig.suptitle(opcion.get())
+    plt.close()
+    Plot = FigureCanvasTkAgg(fig, master=window)
+    Plot.draw()
+    Plot.get_tk_widget().place(x=70,y=106)
 def exportarDatos():
     x=3
 
@@ -29,12 +39,7 @@ BotonImportar = tk.Button(master=frame1, text="Importar datos", command = export
 
 titulo = tk.Label(master=frame1, bg="#354F52",fg='#FFF', font=('Arial', 15, 'bold'), text=f"señal de ECG",width=41).place(x=62,y=70)
 
-grafica = tk.Frame(master=window)
-grafica.place(x=71, y=106)
-grafica.config(bg="#FFF", width=453, height=300, bd=8)
-
 def HR():
-
     y = 5
     resul.set(y)
 
@@ -103,7 +108,7 @@ entryfactorRuido = tk.Entry(master=frame1, textvariable = factorRuido, width = 1
 
 
 
-img3=Image.open("salud.png")
+img3=Image.open("salud.jpg")
 img3= img3.resize((166, 190))
 img3 = ImageTk.PhotoImage(img3)
 lab3 = tk.Label(image=img3,borderwidth=0)
@@ -111,16 +116,27 @@ lab3.place(x=570, y=480)
 
 def hola():
  print("dddddddd")
+ grafica()
 
 fondoParametros = tk.Label(master=frame1,bg="#52796F", width=23, font=('Arial', 15, 'bold'), height=10 ).place(x=760, y=442)
 metodoSolucionTitulo = tk.Label(master=frame1, bg="#354F52",fg='#FFF', font=('Arial', 15, 'bold'), text="Método de solucion ED",width=23).place(x=760,y=430)
 opcion = tk.IntVar()
 Nombre = tk.StringVar()
-seno = tk.Radiobutton(master=frame1, text='Euler adelante', value=1, command=hola, variable=opcion, bg='#52796F',fg='#FFF' ,font=('Arial', 13, 'bold'),  highlightthickness = 0).place(x=800,y=475)
-coseno = tk.Radiobutton(master=frame1, text='Euler atras', value=2, command=hola, variable=opcion, bg='#52796F',fg='#FFF',font=('Arial', 13, 'bold'),  highlightthickness = 0).place(x=800,y=515)
-exp = tk.Radiobutton(master=frame1, text='Euler modificado', value=3, command=hola, variable=opcion, bg='#52796F',fg='#FFF',font=('Arial', 13, 'bold'),  highlightthickness = 0).place(x=800,y=555)
-log = tk.Radiobutton(master=frame1, text='Runge-Kutta 2', value=4, command=hola, variable=opcion, bg='#52796F',fg='#FFF',font=('Arial', 13, 'bold'),  highlightthickness = 0).place(x=800,y=595)
-sqrt = tk.Radiobutton(master=frame1, text='Runge-Kutta 4', value=5, command=hola, variable=opcion, bg='#52796F',fg='#FFF',font=('Arial', 13, 'bold'),  highlightthickness = 0).place(x=800,y=635)
 
+seno = tk.Radiobutton(master=frame1, text='Euler adelante', value=1, command=hola, variable=opcion, bg='#52796F',fg='#FFF' ,font=('Arial', 13, 'bold'),  highlightthickness = 0, selectcolor='#52796F')
+seno.place(x=800,y=475)
+
+coseno = tk.Radiobutton(master=frame1, text='Euler atras', value=2, command=hola, variable=opcion, bg='#52796F',fg='#FFF',font=('Arial', 13, 'bold'),  highlightthickness = 0, selectcolor='#52796F')
+coseno.place(x=800,y=515)
+
+exp = tk.Radiobutton(master=frame1, text='Euler modificado', value=3, command=hola, variable=opcion, bg='#52796F',fg='#FFF',font=('Arial', 13, 'bold'),  highlightthickness = 0, selectcolor='#52796F')
+exp.place(x=800,y=555)
+
+log = tk.Radiobutton(master=frame1, text='Runge-Kutta 2', value=4, command=hola, variable=opcion, bg='#52796F',fg='#FFF',font=('Arial', 13, 'bold'),  highlightthickness = 0, selectcolor='#52796F')
+log.place(x=800,y=595)
+
+sqrt = tk.Radiobutton(master=frame1, text='Runge-Kutta 4', value=5, command=hola, variable=opcion, bg='#52796F',fg='#FFF',font=('Arial', 13, 'bold'),  highlightthickness = 0, selectcolor='#52796F')
+sqrt.place(x=800,y=635)
+seno.select()
 
 window.mainloop()
