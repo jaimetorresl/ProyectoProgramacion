@@ -18,7 +18,7 @@ def F3(y1,y2,y3,a,b,ti,tMuestreo):
     theta = np.arctan2(y1,y2)
     suma = 0
     for i in range(5):
-        dthetai = np.mod(theta - ti[i], 2 * np.pi)
+        dthetai = np.fmod(theta - ti[i], 2 * np.pi)
         suma += (a[i]*dthetai*np.exp(-(dthetai**2/(2*(b[i]**2)))))
     z0 =  (1.5 * 10**(-4)) * np.sin(2 * np.pi * 0.25 * (tMuestreo))
     return suma*-1 - (y3-z0)
@@ -137,7 +137,3 @@ def EulerMod(y1,y2,y3, FrecuenciaCardiaca = 360, NumLatidos = 30, FrecuenciaMues
     return Y3EulerMod
 
 
-data = EulerForward(0.025,0,0.4)
-plt.plot(data[0],data[1])
-plt.grid(1)
-plt.show()

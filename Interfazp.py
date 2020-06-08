@@ -2,6 +2,7 @@
 import tkinter as tk
 from PIL import ImageTk ,Image
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
+from ECG import EulerForward
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -32,9 +33,22 @@ Boton2 = tk.Button(master=window, text="X", command = CerrarAplicacion, bg='#e63
 def grafica():
     plt.style.use('seaborn-darkgrid')
     fig = plt.Figure(figsize=(4.55, 3), dpi=100)
-    t = np.arange(0,10, 0.01)
+    #Si sabe como sacar los datos metalos en el EulerForward prro y mete el "y"
+    data = EulerForward()
+    t = data[0]
+    y = data[1]
     fig.add_subplot(111).plot(t, np.cos(t))     # subplot(filas, columnas, item)
-    fig.suptitle(opcion.get())
+    if opcion.get() == 1:
+        fig.suptitle("Euler Forward")
+    elif opcion.get() == 2:
+        fig.suptitle("Euler Backward")
+    elif opcion.get() == 3:
+        fig.suptitle("Euler Modificando")
+    elif opcion.get() == 4:
+        fig.suptitle("RK2")
+    elif opcion.get() == 5:
+        fig.suptitle("RK4")
+
     plt.close()
     Plot = FigureCanvasTkAgg(fig, master=window)
     Plot.draw()
@@ -123,8 +137,12 @@ lab3 = tk.Label(image=img3,borderwidth=0)
 lab3.place(x=570, y=480)
 
 def hola():
- print("dddddddd")
- grafica()
+    valor = opcion.get()
+    if valor == 1:
+        grafica()
+
+
+
 
 fondoParametros = tk.Label(master=frame1,bg="#52796F", width=23, font=('Arial', 15, 'bold'), height=10 ).place(x=760, y=442)
 metodoSolucionTitulo = tk.Label(master=frame1, bg="#354F52",fg='#FFF', font=('Arial', 15, 'bold'), text="Método de solucion ED",width=23).place(x=760,y=430)
