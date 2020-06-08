@@ -42,6 +42,7 @@ NumLatidos = 10
 FrecuenciaMuestreo = 360
 error = False
 nombre = "Euler Adelante"
+z=[]
 
 #Datos default
 def default():
@@ -101,6 +102,7 @@ def grafica():
     guardarValoresInterfaz()
     global error
     global nombre
+    global z
     if error == False:
         plt.style.use('seaborn-darkgrid')
         fig = plt.Figure(figsize=(4.55, 3), dpi=100)
@@ -128,6 +130,8 @@ def grafica():
             data = RK4(0.025, 0, 0.006,FrecuenciaCardiaca , NumLatidos , FrecuenciaMuestreo , a, b)
             fig.suptitle("RK4")
         t = data[0]
+        #Z es una variaable global para poder calcular el HR
+        z = data[1]
         y = data[1]
         fig.add_subplot(111).plot(t, y)  # subplot(filas, columnas, item)
         plt.close()
@@ -224,10 +228,11 @@ BotonImportar = tk.Button(master=frame1, text="Importar datos", command = import
 titulo = tk.Label(master=frame1, bg="#354F52",fg='#FFF', font=('Arial', 15, 'bold'), text=f"señal de ECG",width=41).place(x=62,y=70)
 
 def HR():
-    y = ""
+    y = findpeaks(z,FrecuenciaMuestreo)
+    y = str(y)[0:5]
     resul.set(y)
 
-BotonHR = tk.Button(master=frame1, text="Hallar HR", command = exportarDatos, width = 10, bg='#354F52', fg='#FFF', font='bold').place(x=150, y=430)
+BotonHR = tk.Button(master=frame1, text="Hallar HR", command = HR, width = 10, bg='#354F52', fg='#FFF', font='bold').place(x=150, y=430)
 
 resul = tk.StringVar()
 HR()

@@ -242,18 +242,16 @@ def RK4(y1,y2,y3, FrecuenciaCardiaca = 60, NumLatidos = 10, FrecuenciaMuestreo =
 
     return T,Y3EulerRK4
 def findpeaks(z,tMuestreo=360):
-    peaks, properties = find_peaks(z, height=0.03)
-    time = np.arange(z.size) / tMuestreo
-    plt.plot(time, z)
-    plt.plot(peaks / tMuestreo, z[peaks], "oc")
+    peaks, properties = find_peaks(z, height=0.02)
+    time = np.arange(len(z)) / tMuestreo
 
     time_ecg = time[peaks]
     time_ecg = time_ecg[1:]
     taco = np.diff(time[peaks])
 
-    plt.show()
 
     tacobpm = 60 / taco
+    print(np.mean(tacobpm))
     return np.mean(tacobpm)
 
 
