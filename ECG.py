@@ -170,12 +170,14 @@ def RK2(y1,y2,y3, FrecuenciaCardiaca = 60, NumLatidos = 10, FrecuenciaMuestreo =
     for iter in range(1, len(T)):
         k11 = F1(Y1EulerRK2[iter-1], Y2EulerRK2[iter-1],tRR[iter-1])
         k21 = F2(Y1EulerRK2[iter-1] , Y2EulerRK2[iter-1], tRR[iter-1])
-        k12 =
+        k31 = F3(Y1EulerRK2[iter-1],Y2EulerRK2[iter-1],Y3EulerRK2[iter-1],a,b,ti,FrecuenciaMuestreo)
+
+        k12 = F1(Y1EulerRK2[iter-1]+k11*h, Y2EulerRK2[iter-1] + k21*h,tRR[iter-1] +h)
+        k22 = F2(Y1EulerRK2[iter-1]+k11*h, Y2EulerRK2[iter-1] + k21*h,tRR[iter-1] +h)
+        k32 = F3(Y1EulerRK2[iter-1]+k11*h, Y2EulerRK2[iter-1] + k21*h,tRR[iter-1],Y3EulerRK2[iter-1] + k31*h,a,b,ti,FrecuenciaMuestreo)
+
+        Y1EulerRK2[iter] = Y1EulerRK2[iter-1] + (h/2.0)*(k11 + k12)
+        Y2EulerRK2[iter] = Y2EulerRK2[iter-1] + (h/2.0) * (k21+k22)
+        Y3EulerRK2[iter] = Y3EulerRK2[iter-1] + (h/2.0) *(k31 + k32)
 
     return T,Y3EulerRK2
-
-
-data = EulerMod(0.025,0,0.012)
-plt.plot(data[0],data[1])
-plt.grid(1)
-plt.show()
