@@ -10,6 +10,7 @@ from ECG import *
 import matplotlib.pyplot as plt
 import numpy as np
 
+
 '''Configuramos la Ventana'''
 window = tk.Tk()  # Definimos la ventana con nombre window
 window.geometry('1080x720')  # Tamaño de la ventana
@@ -34,41 +35,186 @@ def CerrarAplicacion():
         tk.messagebox.showinfo('Retornar','Será retornado a la aplicación')
 Boton2 = tk.Button(master=window, text="X", command = CerrarAplicacion, bg='#e63946', fg='#FFF', font='bold',highlightthickness = 0,borderwidth=0).place(x=1044,y=0)
 
-def grafica():
-    plt.style.use('seaborn-darkgrid')
-    fig = plt.Figure(figsize=(4.55, 3), dpi=100)
-    #Si sabe como sacar los datos metalos en el EulerForward prro y mete el "y"
-    data = EulerForward(0.025,0,0.006)
+a = [1.2, -5.0, 30.0, -7.5, 0.75]
+b = [0.25, 0.1, 0.1, 0.1, 0.4]
+FrecuenciaCardiaca = 60
+NumLatidos = 10
+FrecuenciaMuestreo = 360
+error = False
+nombre = "Euler Adelante"
 
-    if opcion.get() == 1:
-        data = EulerForward(0.025, 0, 0.006)
-        fig.suptitle("Euler Forward")
-    elif opcion.get() == 2:
-        data = EulerBack(0.025, 0, 0.006)
-        fig.suptitle("Euler Backward")
-    elif opcion.get() == 3:
-        data = EulerMod(0.025, 0, 0.006)
-        fig.suptitle("Euler Modificando")
-    elif opcion.get() == 4:
-        data = RK2(0.025, 0, 0.006)
-        fig.suptitle("RK2")
-    elif opcion.get() == 5:
-        data = RK4(0.025, 0, 0.006)
-        fig.suptitle("RK4")
-    t = data[0]
-    y = data[1]
-    fig.add_subplot(111).plot(t, y)  # subplot(filas, columnas, item)
-    plt.close()
-    Plot = FigureCanvasTkAgg(fig, master=window)
-    Plot.draw()
-    Plot.get_tk_widget().place(x=70,y=106)
+#Datos default
+def default():
+    global a
+    global b
+    global FrecuenciaCardiaca
+    global NumLatidos
+    global FrecuenciaMuestreo
+    global error
+    a= [1.2,-5.0,30.0,-7.5,0.75]
+    b = [0.25,0.1,0.1,0.1,0.4]
+    FrecuenciaCardiaca = 60
+    NumLatidos = 10
+    FrecuenciaMuestreo = 360
+    error = False
+
+default()
+
+def to_int(value, var):
+    value = value.get()
+    if (value == ""):
+        value =var
+    try:
+            x = float(value)
+            return x
+    except ValueError:
+        global error
+        error= True
+        tk.messagebox.showinfo('Número invalido', ' Todas las casillas deben tener un valor numerico.')
+
+def guardarValoresInterfaz():
+    global a
+    global b
+    global FrecuenciaCardiaca
+    global NumLatidos
+    global FrecuenciaMuestreo
+
+    a[0] = to_int(aiP, a[0])
+    a[1] = to_int(aiQ, a[1])
+    a[2] = to_int(aiR, a[2])
+    a[3] = to_int(aiS, a[3])
+    a[4] = to_int(aiT, a[4])
+    b[0] = to_int(biP, b[0])
+    b[1] = to_int(biQ, b[1])
+    b[2] = to_int(biR, b[2])
+    b[3] = to_int(biS, b[3])
+    b[4] = to_int(biT, b[4])
+    FrecuenciaCardiaca =to_int(frecuenciaCardiaca,FrecuenciaCardiaca)
+    NumLatidos = to_int(numeroLatidos,NumLatidos)
+    FrecuenciaMuestreo = to_int(frecuenciaMuestreo,FrecuenciaMuestreo)
+
+
+
+
+
+def grafica():
+    guardarValoresInterfaz()
+    global error
+    global nombre
+    if error == False:
+        plt.style.use('seaborn-darkgrid')
+        fig = plt.Figure(figsize=(4.55, 3), dpi=100)
+        #Si sabe como sacar los datos metalos en el EulerForward prro y mete el "y"
+        data = EulerForward(0.025,0,0.006)
+
+        if opcion.get() == 1:
+            nombre = "Euler Forward"
+            data = EulerForward(0.025, 0, 0.006, FrecuenciaCardiaca , NumLatidos , FrecuenciaMuestreo , a, b)
+            fig.suptitle("Euler Forward")
+        elif opcion.get() == 2:
+            nombre = "Euler Backward"
+            data = EulerBack(0.025, 0, 0.006, FrecuenciaCardiaca , NumLatidos , FrecuenciaMuestreo , a, b)
+            fig.suptitle("Euler Backward")
+        elif opcion.get() == 3:
+            nombre = "Euler Modificando"
+            data = EulerMod(0.025, 0, 0.006,FrecuenciaCardiaca , NumLatidos , FrecuenciaMuestreo , a, b)
+            fig.suptitle("Euler Modificando")
+        elif opcion.get() == 4:
+            nombre = "RK2"
+            data = RK2(0.025, 0, 0.006, FrecuenciaCardiaca , NumLatidos , FrecuenciaMuestreo , a, b)
+            fig.suptitle("RK2")
+        elif opcion.get() == 5:
+            nombre = "RK4"
+            data = RK4(0.025, 0, 0.006,FrecuenciaCardiaca , NumLatidos , FrecuenciaMuestreo , a, b)
+            fig.suptitle("RK4")
+        t = data[0]
+        y = data[1]
+        fig.add_subplot(111).plot(t, y)  # subplot(filas, columnas, item)
+        plt.close()
+        Plot = FigureCanvasTkAgg(fig, master=window)
+        Plot.draw()
+        Plot.get_tk_widget().place(x=70,y=106)
+
+    error = False
+
+
 
 def importarDatos():
     root= filedialog.askopenfilename()
     print(root)
+    f = open(root, "r")
+    line = f.readline()
+    nombre = line
+    if(nombre == "Euler Forward"):
+        opcion.set(1)
+    if(nombre == "Euler Backward"):
+        opcion.set(2)
+    if(nombre == "Euler Modificando"):
+        opcion.set(3)
+    if(nombre == "RK2"):
+        opcion.set(4)
+    if(nombre == "RK4"):
+        opcion.set(5)
+
+    global a
+    global b
+    global FrecuenciaCardiaca
+    global NumLatidos
+    global FrecuenciaMuestreo
+
+    line = f.readline()
+    x = line.split()
+    for y in range(0, len(x)):
+        a[y] = float(x[y])
+
+    line = f.readline()
+    x = line.split()
+    for y in range(0, len(x)):
+        b[y] = float(x[y])
+    line = f.readline()
+    FrecuenciaCardiaca =float(line)
+    line = f.readline()
+    NumLatidos = float(line)
+    line = f.readline()
+    FrecuenciaMuestreo = float(line)
+
+    asignar
+    grafica()
     tk.messagebox.showinfo('Importar datos', 'Los datos se han cargado correctamente')
+
+def asignar():
+    aiP.set(a[0])
+    aiQ.set(a[1])
+    aiR.set(a[2])
+    aiS.set(a[3])
+    aiT.set(a[4])
+
+    biP.set(a[0])
+    biQ.set(a[1])
+    biR.set(a[2])
+    biS.set(a[3])
+    biT.set(a[4])
+
+
+
+
 def exportarDatos():
     root = filedialog.asksaveasfilename	()
+    f = open(root, "w+")
+
+    f.write(nombre+"\n")
+    text=""
+    for x in range(0, len(a)):
+        text =text+str(a[x])+" "
+    f.write(text + "\n")
+    text = ""
+    for x in range(0, len(b)):
+        text = text + str(b[x]) + " "
+    f.write(text + "\n")
+    f.write(str(FrecuenciaCardiaca) + "\n")
+    f.write(str(NumLatidos) + "\n")
+    f.write(str(FrecuenciaMuestreo) + "\n")
+    f.close
     print(root)
     tk.messagebox.showinfo('Exportar datos', 'Los datos se han guardado correctamente')
 
@@ -78,7 +224,7 @@ BotonImportar = tk.Button(master=frame1, text="Importar datos", command = import
 titulo = tk.Label(master=frame1, bg="#354F52",fg='#FFF', font=('Arial', 15, 'bold'), text=f"señal de ECG",width=41).place(x=62,y=70)
 
 def HR():
-    y = 5
+    y = ""
     resul.set(y)
 
 BotonHR = tk.Button(master=frame1, text="Hallar HR", command = exportarDatos, width = 10, bg='#354F52', fg='#FFF', font='bold').place(x=150, y=430)
@@ -164,20 +310,20 @@ metodoSolucionTitulo = tk.Label(master=frame1, bg="#354F52",fg='#FFF', font=('Ar
 opcion = tk.IntVar()
 Nombre = tk.StringVar()
 
-seno = tk.Radiobutton(master=frame1, text='Euler adelante', value=1, command=hola, variable=opcion, bg='#52796F',fg='#FFF' ,font=('Arial', 13, 'bold'),  highlightthickness = 0, selectcolor='#52796F')
-seno.place(x=800,y=475)
+eulerAdelante = tk.Radiobutton(master=frame1, text='Euler adelante', value=1, command=hola, variable=opcion, bg='#52796F', fg='#FFF', font=('Arial', 13, 'bold'), highlightthickness = 0, selectcolor='#52796F')
+eulerAdelante.place(x=800, y=475)
 
-coseno = tk.Radiobutton(master=frame1, text='Euler atras', value=2, command=hola, variable=opcion, bg='#52796F',fg='#FFF',font=('Arial', 13, 'bold'),  highlightthickness = 0, selectcolor='#52796F')
-coseno.place(x=800,y=515)
+eulerAtras = tk.Radiobutton(master=frame1, text='Euler atras', value=2, command=hola, variable=opcion, bg='#52796F', fg='#FFF', font=('Arial', 13, 'bold'), highlightthickness = 0, selectcolor='#52796F')
+eulerAtras.place(x=800, y=515)
 
-exp = tk.Radiobutton(master=frame1, text='Euler modificado', value=3, command=hola, variable=opcion, bg='#52796F',fg='#FFF',font=('Arial', 13, 'bold'),  highlightthickness = 0, selectcolor='#52796F')
-exp.place(x=800,y=555)
+eulerModificado = tk.Radiobutton(master=frame1, text='Euler modificado', value=3, command=hola, variable=opcion, bg='#52796F', fg='#FFF', font=('Arial', 13, 'bold'), highlightthickness = 0, selectcolor='#52796F')
+eulerModificado.place(x=800, y=555)
 
-log = tk.Radiobutton(master=frame1, text='Runge-Kutta 2', value=4, command=hola, variable=opcion, bg='#52796F',fg='#FFF',font=('Arial', 13, 'bold'),  highlightthickness = 0, selectcolor='#52796F')
-log.place(x=800,y=595)
+rk2 = tk.Radiobutton(master=frame1, text='Runge-Kutta 2', value=4, command=hola, variable=opcion, bg='#52796F',fg='#FFF',font=('Arial', 13, 'bold'),  highlightthickness = 0, selectcolor='#52796F')
+rk2.place(x=800,y=595)
 
-sqrt = tk.Radiobutton(master=frame1, text='Runge-Kutta 4', value=5, command=hola, variable=opcion, bg='#52796F',fg='#FFF',font=('Arial', 13, 'bold'),  highlightthickness = 0, selectcolor='#52796F')
-sqrt.place(x=800,y=635)
-seno.select()
+rk4 = tk.Radiobutton(master=frame1, text='Runge-Kutta 4', value=5, command=hola, variable=opcion, bg='#52796F',fg='#FFF',font=('Arial', 13, 'bold'),  highlightthickness = 0, selectcolor='#52796F')
+rk4.place(x=800,y=635)
+eulerAdelante.select()
 
 window.mainloop()

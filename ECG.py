@@ -101,7 +101,7 @@ def EulerBack(y1,y2,y3, FrecuenciaCardiaca = 60, NumLatidos = 10, FrecuenciaMues
         Y3EulerBack[iter] = Y3EulerBack[iter-1] + h * F3(Y1EulerBack[iter],Y2EulerBack[iter],Y3EulerBack[iter],a,b,ti,FrecuenciaMuestreo)
     return T,Y3EulerBack
 
-def EulerMod(y1,y2,y3, FrecuenciaCardiaca = 60, NumLatidos = 10, FrecuenciaMuestreo = 360, a=[1.2,-5.0,30.0,-7.5,0.75], b=[0.25,0.1,0.1,0.1,0.4],ti=[(-1/3)*np.pi,(-1/12)*np.pi,0,(1/12)*np.pi, (1/2)*np.pi]):
+def EulerMod(y1,y2,y3, FrecuenciaCardiaca , NumLatidos , FrecuenciaMuestreo , a, b,ti=[(-1/3)*np.pi,(-1/12)*np.pi,0,(1/12)*np.pi, (1/2)*np.pi]):
     #Defininimos el avance
     h = 1 / FrecuenciaMuestreo
     # Definimos la condición inicial para Y1 y Y2
