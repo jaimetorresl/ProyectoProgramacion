@@ -1,5 +1,7 @@
 
 import tkinter as tk
+from tkinter import filedialog
+
 import  PIL
 from PIL import Image
 from PIL import ImageTk
@@ -60,11 +62,18 @@ def grafica():
     Plot = FigureCanvasTkAgg(fig, master=window)
     Plot.draw()
     Plot.get_tk_widget().place(x=70,y=106)
+
+def importarDatos():
+    root= filedialog.askopenfilename()
+    print(root)
+    tk.messagebox.showinfo('Importar datos', 'Los datos se han cargado correctamente')
 def exportarDatos():
-    x=3
+    root = filedialog.asksaveasfilename	()
+    print(root)
+    tk.messagebox.showinfo('Exportar datos', 'Los datos se han guardado correctamente')
 
 BotonExportar = tk.Button(master=frame1, text="Exportar datos", command = exportarDatos, width = 10, bg='#354F52', fg='#FFF', font='bold').place(x=150, y=5)
-BotonImportar = tk.Button(master=frame1, text="Importar datos", command = exportarDatos, width = 10, bg='#354F52', fg='#FFF', font='bold').place(x=300, y=5)
+BotonImportar = tk.Button(master=frame1, text="Importar datos", command = importarDatos, width = 10, bg='#354F52', fg='#FFF', font='bold').place(x=300, y=5)
 
 titulo = tk.Label(master=frame1, bg="#354F52",fg='#FFF', font=('Arial', 15, 'bold'), text=f"señal de ECG",width=41).place(x=62,y=70)
 
