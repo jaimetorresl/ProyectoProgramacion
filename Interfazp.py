@@ -34,10 +34,10 @@ def grafica():
     plt.style.use('seaborn-darkgrid')
     fig = plt.Figure(figsize=(4.55, 3), dpi=100)
     #Si sabe como sacar los datos metalos en el EulerForward prro y mete el "y"
-    data = EulerForward()
+    data = EulerForward(0.025,0,0.006)
     t = data[0]
     y = data[1]
-    fig.add_subplot(111).plot(t, np.cos(t))     # subplot(filas, columnas, item)
+    fig.add_subplot(111).plot(t, y)     # subplot(filas, columnas, item)
     if opcion.get() == 1:
         fig.suptitle("Euler Forward")
     elif opcion.get() == 2:
