@@ -20,6 +20,14 @@ frame1 = tk.Frame(master=window)
 frame1.place(x=0, y=0)
 frame1.config(bg="#2F3E46", width=1080, height=720, bd=8)
 
+'''Se definen todas las funciones requeridas'''
+def CerrarAplicacion():
+    MsgBox = tk.messagebox.askquestion ('Cerrar Aplicación','¿Está seguro que desea cerrar la aplicación?',icon = 'warning')
+    if MsgBox == 'yes':
+       window.destroy()
+    else:
+        tk.messagebox.showinfo('Retornar','Será retornado a la aplicación')
+Boton2 = tk.Button(master=window, text="X", command = CerrarAplicacion, bg='#e63946', fg='#FFF', font='bold',highlightthickness = 0,borderwidth=0).place(x=1044,y=0)
 
 def grafica():
     plt.style.use('seaborn-darkgrid')
