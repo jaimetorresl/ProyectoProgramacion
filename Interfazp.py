@@ -4,7 +4,7 @@ import  PIL
 from PIL import Image
 from PIL import ImageTk
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
-from ECG import EulerForward
+from ECG import *
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -37,20 +37,25 @@ def grafica():
     fig = plt.Figure(figsize=(4.55, 3), dpi=100)
     #Si sabe como sacar los datos metalos en el EulerForward prro y mete el "y"
     data = EulerForward(0.025,0,0.006)
-    t = data[0]
-    y = data[1]
-    fig.add_subplot(111).plot(t, y)     # subplot(filas, columnas, item)
+
     if opcion.get() == 1:
+        data = EulerForward(0.025, 0, 0.006)
         fig.suptitle("Euler Forward")
     elif opcion.get() == 2:
+        data = EulerBack(0.025, 0, 0.006)
         fig.suptitle("Euler Backward")
     elif opcion.get() == 3:
+        data = EulerMod(0.025, 0, 0.006)
         fig.suptitle("Euler Modificando")
     elif opcion.get() == 4:
+        data = RK2(0.025, 0, 0.006)
         fig.suptitle("RK2")
     elif opcion.get() == 5:
+        data = RK4(0.025, 0, 0.006)
         fig.suptitle("RK4")
-
+    t = data[0]
+    y = data[1]
+    fig.add_subplot(111).plot(t, y)  # subplot(filas, columnas, item)
     plt.close()
     Plot = FigureCanvasTkAgg(fig, master=window)
     Plot.draw()
@@ -140,8 +145,7 @@ lab3.place(x=570, y=480)
 
 def hola():
     valor = opcion.get()
-    if valor == 1:
-        grafica()
+    grafica()
 
 
 

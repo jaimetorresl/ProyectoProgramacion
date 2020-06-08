@@ -255,5 +255,3 @@ def findpeaks(z,tMuestreo):
 
     tacobpm = 60 / taco
     return np.mean(tacobpm)
-
-
