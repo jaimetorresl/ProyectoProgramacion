@@ -1,6 +1,8 @@
 # Importamos las librerías necesarias
 import numpy as np
+from scipy.signal import find_peaks
 import matplotlib.pyplot as plt
+
 import scipy.optimize as opt
 import scipy.integrate as inte
 
@@ -25,7 +27,7 @@ def F3(y1,y2,y3,a,b,ti,tMuestreo):
 
 
 
-def EulerForward(y1,y2,y3, FrecuenciaCardiaca = 60, NumLatidos = 10, FrecuenciaMuestreo = 360, a=[1.2,-5.0,30.0,-7.5,0.75], b=[0.25,0.1,0.1,0.1,0.4],ti=[(-1/3)*np.pi,(-1/12)*np.pi,0,(1/12)*np.pi, (1/2)*np.pi]):
+def EulerForward(y1,y2,y3, FrecuenciaCardiaca = 80, NumLatidos = 12, FrecuenciaMuestreo = 360, a=[1.2,-5.0,30.0,-7.5,0.75], b=[0.25,0.1,0.1,0.1,0.4],ti=[(-1/3)*np.pi,(-1/12)*np.pi,0,(1/12)*np.pi, (1/2)*np.pi]):
     #Defininimos el avance
     h = 1 / FrecuenciaMuestreo
     # Definimos la condición inicial para Y1 y Y2
@@ -174,10 +176,84 @@ def RK2(y1,y2,y3, FrecuenciaCardiaca = 60, NumLatidos = 10, FrecuenciaMuestreo =
 
         k12 = F1(Y1EulerRK2[iter-1]+k11*h, Y2EulerRK2[iter-1] + k21*h,tRR[iter-1] +h)
         k22 = F2(Y1EulerRK2[iter-1]+k11*h, Y2EulerRK2[iter-1] + k21*h,tRR[iter-1] +h)
-        k32 = F3(Y1EulerRK2[iter-1]+k11*h, Y2EulerRK2[iter-1] + k21*h,tRR[iter-1],Y3EulerRK2[iter-1] + k31*h,a,b,ti,FrecuenciaMuestreo)
+        k32 = F3(Y1EulerRK2[iter-1]+k11*h, Y2EulerRK2[iter-1] + k21*h,Y3EulerRK2[iter-1] + k31*h,a,b,ti,FrecuenciaMuestreo)
 
         Y1EulerRK2[iter] = Y1EulerRK2[iter-1] + (h/2.0)*(k11 + k12)
         Y2EulerRK2[iter] = Y2EulerRK2[iter-1] + (h/2.0) * (k21+k22)
         Y3EulerRK2[iter] = Y3EulerRK2[iter-1] + (h/2.0) *(k31 + k32)
 
     return T,Y3EulerRK2
+def RK4(y1,y2,y3, FrecuenciaCardiaca = 60, NumLatidos = 10, FrecuenciaMuestreo = 360, a=[1.2,-5.0,30.0,-7.5,0.75], b=[0.25,0.1,0.1,0.1,0.4],ti=[(-1/3)*np.pi,(-1/12)*np.pi,0,(1/12)*np.pi, (1/2)*np.pi]):
+    #Defininimos el avance
+    h = 1 / FrecuenciaMuestreo
+    # Definimos la condición inicial para Y1 y Y2
+    Y10 = y1
+    Y20 = y2
+    Y30 = y3
+    # Definimos el tiempo inicial
+    To = 0.0
+    # Definimos el tiempo final
+    Tf = NumLatidos
+
+    meanFc = 60 / FrecuenciaCardiaca
+
+    # RR para calcular el omega
+    # Creamos un arreglo de tiempo que vaya
+    # desde To hasta Tf con pasos de h
+    T = np.arange(To, Tf + h, h)
+
+    tRR = np.random.normal(meanFc, meanFc * 0.05, np.size(T))
+
+    # Definimos un arreglo para ir almacenando
+    # los valores estimados de Y1(t) en cada iteración
+    Y1EulerRK4 = np.zeros(len(T))
+    Y2EulerRK4 = np.zeros(len(T))
+    Y3EulerRK4 = np.zeros(len(T))
+
+    Y1EulerRK4[0] = Y10
+    Y2EulerRK4[0] = Y20
+    Y3EulerRK4[0] = Y30
+
+    for iter in range(1, len(T)):
+        k11 = F1(Y1EulerRK4[iter-1], Y2EulerRK4[iter-1],tRR[iter-1])
+        k21 = F2(Y1EulerRK4[iter-1] , Y2EulerRK4[iter-1], tRR[iter-1])
+        k31 = F3(Y1EulerRK4[iter-1],Y2EulerRK4[iter-1],Y3EulerRK4[iter-1],a,b,ti,FrecuenciaMuestreo)
+
+        k12 = F1(Y1EulerRK4[iter-1]+0.5*k11*h, Y2EulerRK4[iter-1] + 0.5*k21*h,tRR[iter-1] +0.5*h)
+        k22 = F2(Y1EulerRK4[iter-1]+0.5*k11*h, Y2EulerRK4[iter-1] + 0.5*k21*h,tRR[iter-1] +0.5*h)
+        k32 = F3(Y1EulerRK4[iter-1]+0.5*k11*h, Y2EulerRK4[iter-1] + 0.5*k21*h,Y3EulerRK4[iter-1] + k31*h,a,b,ti,FrecuenciaMuestreo)
+
+        k13 = F1(Y1EulerRK4[iter-1]+0.5*k12*h, Y2EulerRK4[iter-1] + 0.5*k22*h,tRR[iter-1] +0.5*h)
+        k23 = F2(Y1EulerRK4[iter - 1] + 0.5 * k12 * h, Y2EulerRK4[iter - 1] + 0.5 * k22 * h, tRR[iter - 1] + 0.5 * h)
+        k33 = F3(Y1EulerRK4[iter - 1] + 0.5 * k12 * h, Y2EulerRK4[iter - 1] + 0.5 * k22 * h,
+                 Y3EulerRK4[iter - 1] + k32 * h, a, b, ti, FrecuenciaMuestreo)
+
+        k14 = F1(Y1EulerRK4[iter - 1] + 0.5 * k13 * h, Y2EulerRK4[iter - 1] + 0.5 * k23 * h, tRR[iter - 1] + 0.5 * h)
+        k24 = F2(Y1EulerRK4[iter - 1] + 0.5 * k13 * h, Y2EulerRK4[iter - 1] + 0.5 * k23 * h, tRR[iter - 1] + 0.5 * h)
+        k34 = F3(Y1EulerRK4[iter - 1] + 0.5 * k13 * h, Y2EulerRK4[iter - 1] + 0.5 * k23 * h,
+                 Y3EulerRK4[iter - 1] + k33 * h, a, b, ti, FrecuenciaMuestreo)
+
+
+
+
+        Y1EulerRK4[iter] = Y1EulerRK4[iter-1] + (h/6.0)*(k11 + k12 + k13 + k14)
+        Y2EulerRK4[iter] = Y2EulerRK4[iter-1] + (h/6.0) * (k21+k22 + k23 + k24)
+        Y3EulerRK4[iter] = Y3EulerRK4[iter-1] + (h/6.0) *(k31 + k32 + k33 + k34)
+
+    return T,Y3EulerRK4
+def findpeaks(z,tMuestreo):
+    peaks, properties = find_peaks(z, height=0.03)
+    time = np.arange(z.size) / tMuestreo
+    plt.plot(time, z)
+    plt.plot(peaks / tMuestreo, z[peaks], "oc")
+
+    time_ecg = time[peaks]
+    time_ecg = time_ecg[1:]
+    taco = np.diff(time[peaks])
+
+    plt.show()
+
+    tacobpm = 60 / taco
+    return np.mean(tacobpm)
+
+
