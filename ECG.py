@@ -18,7 +18,7 @@ def F3(y1,y2,y3,a,b,ti,tMuestreo):
     theta = np.arctan2(y1,y2)
     suma = 0
     for i in range(5):
-        dthetai = np.fmod(theta - ti[i], 2 * np.pi)
+        dthetai = np.fmod(theta - ti[i], 2 * np.pi)*-1
         suma += (a[i]*dthetai*np.exp(-(dthetai**2/(2*(b[i]**2)))))
     z0 =  (1.5 * 10**(-4)) * np.sin(2 * np.pi * 0.25 * (tMuestreo))
     return suma*-1 - (y3-z0)
@@ -94,12 +94,12 @@ def EulerBack(y1,y2,y3, FrecuenciaCardiaca = 60, NumLatidos = 10, FrecuenciaMues
     Y3EulerBack[0] = Y30
 
     for iter in range(1, len(T)):
-        Y1EulerBack[iter] =  Y1EulerBack[iter-1] + h * F1(Y1EulerBack[iter],Y2EulerBack[iter],tRR[iter] )
-        Y2EulerBack[iter] = Y2EulerBack[iter-1] + h * F2(Y1EulerBack[iter],Y2EulerBack[iter], tRR[iter])
+        Y1EulerBack[iter] =  Y1EulerBack[iter-1] + h * F1(Y1EulerBack[iter-1],Y2EulerBack[iter-1],tRR[iter-1] )
+        Y2EulerBack[iter] = Y2EulerBack[iter-1] + h * F2(Y1EulerBack[iter-1],Y2EulerBack[iter-1], tRR[iter-1])
         Y3EulerBack[iter] = Y3EulerBack[iter-1] + h * F3(Y1EulerBack[iter],Y2EulerBack[iter],Y3EulerBack[iter],a,b,ti,FrecuenciaMuestreo)
     return T,Y3EulerBack
 
-def EulerMod(y1,y2,y3, FrecuenciaCardiaca = 360, NumLatidos = 30, FrecuenciaMuestreo = 360, a=[1.2,-5.0,30.0,-7.5,0.75], b=[0.25,0.1,0.1,0.1,0.4],ti=[(-1/3)*np.pi,(-1/12)*np.pi,0,(1/12)*np.pi, (1/2)*np.pi]):
+def EulerMod(y1,y2,y3, FrecuenciaCardiaca = 60, NumLatidos = 10, FrecuenciaMuestreo = 360, a=[1.2,-5.0,30.0,-7.5,0.75], b=[0.25,0.1,0.1,0.1,0.4],ti=[(-1/3)*np.pi,(-1/12)*np.pi,0,(1/12)*np.pi, (1/2)*np.pi]):
     #Defininimos el avance
     h = 1 / FrecuenciaMuestreo
     # Definimos la condición inicial para Y1 y Y2
@@ -133,7 +133,6 @@ def EulerMod(y1,y2,y3, FrecuenciaCardiaca = 360, NumLatidos = 30, FrecuenciaMues
     for iter in range(1, len(T)):
         Y1EulerMod[iter] =  Y1EulerMod[iter-1] + (h/2.0) * (F1(Y1EulerMod[iter-1],Y2EulerMod[iter-1],tRR[iter]) + F1(Y1EulerMod[iter],Y2EulerMod[iter],tRR[iter]))
         Y2EulerMod[iter] = Y2EulerMod[iter-1] +(h/2.0) *  (F2(Y1EulerMod[iter-1],Y2EulerMod[iter-1],tRR[iter]) + F2(Y1EulerMod[iter],Y2EulerMod[iter], tRR[iter]))
-        Y3EulerMod[iter] = Y3EulerMod[iter-1] + (h/2.0) *   (F3(Y1EulerMod[iter-1],Y2EulerMod[iter-1],tRR[iter])+  F3(Y1EulerMod[iter],Y2EulerMod[iter],Y3EulerMod[iter],a,b,ti,FrecuenciaMuestreo))
-    return Y3EulerMod
-
+        Y3EulerMod[iter] = Y3EulerMod[iter-1] + (h/2.0) *   (F3(Y1EulerMod[iter-1],Y2EulerMod[iter-1],Y3EulerMod[iter-1],a,b,ti,FrecuenciaMuestreo)+  F3(Y1EulerMod[iter],Y2EulerMod[iter],Y3EulerMod[iter],a,b,ti,FrecuenciaMuestreo))
+    return T,Y3EulerMod
 
