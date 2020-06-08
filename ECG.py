@@ -261,3 +261,35 @@ def noise(z):
     return  z + np.random.normal(0,0.0012,z.shape)
 
 
+def exportarDatos(root,metodo,z,t,a,b):
+    archivo = open(root+".txt","w")
+    archivo.write(metodo+"\n")
+    archivo.write(str(len(z)) + "\n")
+    for i in z:
+        archivo.write(str(i)+ "\n")
+    for i in t:
+        archivo.write(str(i) + "\n")
+    for i in a:
+        archivo.write(str(i) + "\n")
+    for i in b:
+        archivo.write(str(i) + "\n")
+    archivo.close()
+
+def importarDatos(root):
+    archivo = open(root, "r")
+    metodo = archivo.readline()
+    lenz = int(archivo.readline())
+    z=[]
+    t=[]
+    a=[]
+    b=[]
+    for i in range(lenz):
+        z.append(float(archivo.readline()))
+    for i in range(lenz):
+        t.append(float(archivo.readline()))
+    for i in range(5):
+        a.append(float(archivo.readline()))
+    for i in range(5):
+        b.append(float(archivo.readline()))
+
+    return metodo,z,t,a,b
