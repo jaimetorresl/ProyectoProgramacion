@@ -1,6 +1,8 @@
 
 import tkinter as tk
-from PIL import ImageTk ,Image
+import  PIL
+from PIL import Image
+from PIL import ImageTk
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 from ECG import EulerForward
 import matplotlib.pyplot as plt
