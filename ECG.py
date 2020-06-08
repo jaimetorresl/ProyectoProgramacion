@@ -241,7 +241,7 @@ def RK4(y1,y2,y3, FrecuenciaCardiaca = 60, NumLatidos = 10, FrecuenciaMuestreo =
         Y3EulerRK4[iter] = Y3EulerRK4[iter-1] + (h/6.0) *(k31 + k32 + k33 + k34)
 
     return T,Y3EulerRK4
-def findpeaks(z,tMuestreo):
+def findpeaks(z,tMuestreo=360):
     peaks, properties = find_peaks(z, height=0.03)
     time = np.arange(z.size) / tMuestreo
     plt.plot(time, z)
@@ -255,3 +255,9 @@ def findpeaks(z,tMuestreo):
 
     tacobpm = 60 / taco
     return np.mean(tacobpm)
+
+
+def noise(z):
+    return  z + np.random.normal(0,0.0012,z.shape)
+
+
